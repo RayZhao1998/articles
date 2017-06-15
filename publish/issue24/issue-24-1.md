@@ -57,7 +57,7 @@
 }
 </style>
 
-<script type="text/javascript" src="/assets/js/issue-24/d3.min.js">
+<script type="text/javascript" src="https://objccn.io/assets/js/issue-24/d3.min.js">
 
 </script>
 
@@ -103,7 +103,7 @@
     <tr>
         <td>
         <svg id="sinecycle" class="svgWithText" width="600" height="100"></svg>
-        <script type="text/javascript" src="/assets/js/issue-24/sine_cycle.js">
+        <script type="text/javascript" src="https://objccn.io/assets/js/issue-24/sine_cycle.js">
         </script>
     </td>
     </tr>
@@ -117,7 +117,7 @@
 <tr>
     <td>
     <svg id="sinecycle2" class="svgWithText" width="600" height="100"></svg>
-    <script type="text/javascript" src="/assets/js/issue-24/sine_cycle2.js">
+    <script type="text/javascript" src="https://objccn.io/assets/js/issue-24/sine_cycle2.js">
     </script>
         </td>
 </tr>
@@ -129,7 +129,7 @@
     <tr>
         <td>
         <svg id="sinecycle3" class="svgWithText" width="600" height="100"></svg>
-        <script type="text/javascript" src="/assets/js/issue-24/sine_cycle3.js">
+        <script type="text/javascript" src="https://objccn.io/assets/js/issue-24/sine_cycle3.js">
         </script>
             </td>
     </tr>
@@ -151,7 +151,7 @@
     <tr>
         <td>
         <svg id="zerocrossings" class="svgWithText" width="600" height="100"></svg>
-        <script type="text/javascript" src="/assets/js/issue-24/zerocrossings.js">
+        <script type="text/javascript" src="https://objccn.io/assets/js/issue-24/zerocrossings.js">
         </script>
             </td>
     </tr>
@@ -163,7 +163,7 @@
 <tr>
     <td>
     <svg id="zerocrossings2" class="svgWithText" width="600" height="100"></svg>
-    <script type="text/javascript" src="/assets/js/issue-24/zerocrossings2.js">
+    <script type="text/javascript" src="https://objccn.io/assets/js/issue-24/zerocrossings2.js">
     </script>
         </td>
 </tr>
@@ -177,7 +177,7 @@
     <tr>
         <td>
         <svg id="zerocrossingscomplex" class="svgWithText" width="600" height="100"></svg>
-        <script type="text/javascript" src="/assets/js/issue-24/zerocrossingscomplex.js">
+        <script type="text/javascript" src="https://objccn.io/assets/js/issue-24/zerocrossingscomplex.js">
         </script>
             </td>
     </tr>
@@ -198,7 +198,7 @@
 <div id="phasorbuttons" class="buttonholder" style="margin-left: 200px; margin-bottom: 10px;">
 </div>
 <svg id="phasorSum2" class="svgWithText" width="600" height="300" style="margin-left: 10px"></svg>
-<script type="text/javascript" src="/assets/js/issue-24/inverse_fourier_transform.js">
+<script type="text/javascript" src="https://objccn.io/assets/js/issue-24/inverse_fourier_transform.js">
 </script>
 
 图中心的蓝色旋转圆圈代表了**基音**，额外的轨道圈描述基音的**泛音**。要注意的是，蓝圈的一次旋转精确对应了一个循环所生成的波形。换句话说，基音每旋转一圈产生一个单一循环中的波形。
@@ -226,7 +226,7 @@ func dotProduct(signalA: [Float], signalB: [Float]) -> [Float] {
 隐藏在这个相当简单的代码段里的是一个非常重要的知识点。点积可被用来计算两个信号之间的相似度或**相关度**。如果两个信号的点积解析为一个大的值，就知道这两个信号是正相关的。如果两个信号的点积是零，就知道这两个信号去相关的 - 它们不相似。一如往常，一图胜千言，我希望你可以花一些时间研究下面的图。
 
 <svg id="sigCorrelationInteractive" class="svgWithText" width="600" height="380" style="margin-left: 10px; margin-top: 10px"></svg>
-<script type="text/javascript" src="/assets/js/issue-24/square_correlation.js">
+<script type="text/javascript" src="https://objccn.io/assets/js/issue-24/square_correlation.js">
 </script>
 
 <script>
@@ -261,7 +261,7 @@ func dotProduct(signalA: [Float], signalB: [Float]) -> [Float] {
     <tr>
         <td>
         <svg id="autosignal" class="svgWithText" width="600" height="100"></svg>
-        <script type="text/javascript" src="/assets/js/issue-24/autosignal.js">
+        <script type="text/javascript" src="https://objccn.io/assets/js/issue-24/autosignal.js">
         </script>
             </td>
     </tr>
@@ -273,7 +273,7 @@ func dotProduct(signalA: [Float], signalB: [Float]) -> [Float] {
     <tr>
         <td><br/>
             <svg id="sigCorrelationInteractiveTwoSines" class="svgWithText" width="600" height="300" style=""></svg>
-            <script type="text/javascript" src="/assets/js/issue-24/sine_correlation.js">
+            <script type="text/javascript" src="https://objccn.io/assets/js/issue-24/sine_correlation.js">
             </script>
 
             <script>
@@ -301,7 +301,7 @@ func dotProduct(signalA: [Float], signalB: [Float]) -> [Float] {
 <tr>
     <td>
     <svg id="autocorrelationinterpretation" class="svgWithText" width="600" height="150"></svg>
-    <script type="text/javascript" src="/assets/js/issue-24/autocorrelationinterpretation.js">
+    <script type="text/javascript" src="https://objccn.io/assets/js/issue-24/autocorrelationinterpretation.js">
     </script>
         </td>
 </tr>
@@ -327,14 +327,14 @@ func dotProduct(signalA: [Float], signalB: [Float]) -> [Float] {
     <tr>
         <td>
         <svg id="buffer1" class="svgWithText" width="600" height="100"></svg>
-        <script type="text/javascript" src="/assets/js/issue-24/buffer1.js">
+        <script type="text/javascript" src="https://objccn.io/assets/js/issue-24/buffer1.js">
         </script>
             </td>
     </tr>
     <tr>
         <td>
         <svg id="buffer2" class="svgWithText" width="600" height="100"></svg>
-        <script type="text/javascript" src="/assets/js/issue-24/buffer2.js">
+        <script type="text/javascript" src="https://objccn.io/assets/js/issue-24/buffer2.js">
         </script>
             </td>
     </tr>
@@ -346,14 +346,14 @@ func dotProduct(signalA: [Float], signalB: [Float]) -> [Float] {
     <tr>
         <td>
         <svg id="buffer3" class="svgWithText" width="600" height="100"></svg>
-        <script type="text/javascript" src="/assets/js/issue-24/buffer3.js">
+        <script type="text/javascript" src="https://objccn.io/assets/js/issue-24/buffer3.js">
         </script>
             </td>
     </tr>
     <tr>
         <td>
         <svg id="buffer4" class="svgWithText" width="600" height="100"></svg>
-        <script type="text/javascript" src="/assets/js/issue-24/buffer4.js">
+        <script type="text/javascript" src="https://objccn.io/assets/js/issue-24/buffer4.js">
         </script>
             </td>
     </tr>
@@ -365,7 +365,7 @@ func dotProduct(signalA: [Float], signalB: [Float]) -> [Float] {
     <tr>
         <td>
         <svg id="buffer5" class="svgWithText" width="600" height="100"></svg>
-        <script type="text/javascript" src="/assets/js/issue-24/buffer5.js">
+        <script type="text/javascript" src="https://objccn.io/assets/js/issue-24/buffer5.js">
         </script>
     </td>
     </tr>
