@@ -39,7 +39,7 @@
 <p>首先，你可能会写一个很简单的函数来检验一个点是否在范围内。为了简明易懂，我们假定我们的船位于原点。这样一来，我们就可以将想要描述的区域形象化，如图 <a href="#fig:battleship1">1</a>：</p>
 <a name="fig:battleship1"></a>
 <div class="figure">
-<img src="artwork/pdf-as-png/battleship-1.pdf.png" alt="图 1: 位于原点的船舶射程范围内的点" id="fig:battleship1" />
+<img src="https://objccn.io/products/functional-swift/preview/artwork/pdf-as-png/battleship-1.pdf.png" alt="图 1: 位于原点的船舶射程范围内的点" id="fig:battleship1" />
 <p class="caption">图 1: 位于原点的船舶射程范围内的点</p>
 </div>
 <p>首先，我们定义两种类型，<code>Distance</code> 和 <code>Position</code>：</p>
@@ -61,7 +61,7 @@
 <p>如果假设我们总是位于原点，那现在这样就可以正常工作了。但是船舶还可能在原点以外的其它位置出现，我们可以更新一下形象化图，如图 <a href="#fig:battleship2">2</a> 所示：</p>
 <a name="fig:battleship2"></a>
 <div class="figure">
-<img src="artwork/pdf-as-png/battleship-2.pdf.png" alt="图 2: 允许船有它自己的位置" id="fig:battleship2" />
+<img src="https://objccn.io/products/functional-swift/preview/artwork/pdf-as-png/battleship-2.pdf.png" alt="图 2: 允许船有它自己的位置" id="fig:battleship2" />
 <p class="caption">图 2: 允许船有它自己的位置</p>
 </div>
 <p>考虑到这一点，我们引入一个结构体 <code>Ship</code>，它有一个属性为 <code>position</code>：</p>
@@ -85,7 +85,7 @@
 <p>也许现在你已经意识到，我们同时还想避免目标船舶离得过近。可以用图 <a href="#fig:battleship-3">3</a> 来说明新情况，我们想要瞄准的仅仅只有那些对我们当前位置而言在 <code>unsafeRange</code> (不安全范围)外的敌人：</p>
 <a name="fig:battleship-3"></a>
 <div class="figure">
-<img src="artwork/pdf-as-png/battleship-3.pdf.png" alt="图 3: 避免与过近的敌方船舶交战" id="fig:battleship-3" />
+<img src="https://objccn.io/products/functional-swift/preview/artwork/pdf-as-png/battleship-3.pdf.png" alt="图 3: 避免与过近的敌方船舶交战" id="fig:battleship-3" />
 <p class="caption">图 3: 避免与过近的敌方船舶交战</p>
 </div>
 <p>这样一来，我们需要再一次修改代码，使 <code>unsafeRange</code> 属性能够发挥作用：</p>
@@ -101,7 +101,7 @@
 <p>最后，我们还需要避免目标船舶过于靠近我方的任意一艘船。我们再一次将其形象化，见图 <a href="#fig:battleship-4">4</a>：</p>
 <a name="fig:battleship-4"></a>
 <div class="figure">
-<img src="artwork/pdf-as-png/battleship-4.pdf.png" alt="图 4: 避免敌方过于接近友方船舶" id="fig:battleship-4" />
+<img src="https://objccn.io/products/functional-swift/preview/artwork/pdf-as-png/battleship-4.pdf.png" alt="图 4: 避免敌方过于接近友方船舶" id="fig:battleship-4" />
 <p class="caption">图 4: 避免敌方过于接近友方船舶</p>
 </div>
 <p>相应地，我们可以向 <code>canSafelyEngage(ship:)</code> 方法添加另一个参数代表友好船舶位置：</p>

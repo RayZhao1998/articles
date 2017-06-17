@@ -466,7 +466,7 @@
 <div class="highlight"><pre><code><span class="pyg-nb">Array</span><span class="pyg-p">(</span><span class="pyg-n">fibs</span><span class="pyg-p">[</span><span class="pyg-mf">1.</span><span class="pyg-p">.&lt;</span><span class="pyg-n">fibs</span><span class="pyg-p">.</span><span class="pyg-n">endIndex</span><span class="pyg-p">])</span> <span class="pyg-c1">// [1, 1, 2, 3, 5]</span>
 </code></pre></div>
 <div class="figure">
-<img src="artwork/pdf-as-png/arrayslice.pdf.png" alt="数组切片" />
+<img src="https://objccn.io/products/advanced-swift/preview/artwork/pdf-as-png/arrayslice.pdf.png" alt="数组切片" />
 <p class="caption">数组切片</p>
 </div>
 <h4 id="桥接">桥接</h4>

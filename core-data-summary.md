@@ -45,14 +45,14 @@
 <p>本章会介绍这个示例程序中与 Core Data 相关的所有方面的内容。请注意这并不是一个从头开始一步一步教你如何创建整个应用的教程。我们推荐你看一下<a href="https://github.com/objcio/core-data/blob/master/Sample-Project-Chapter-1.1">在 GitHub 上完整的代码</a>来在实际项目中了解不同的部分。</p>
 <p>这个示例应用程序包括一个简单的 table view 和底部的实时摄像头拍摄的内容。拍摄一张照片后，我们从照片中提取出它的一组主色。然后存储这些配色方案 (我们称其为 “mood”)，并相应地更新 table view。</p>
 <div class="figure">
-<img src="artwork/moody.png" alt="示例应用程序 - Moody" />
+<img src="https://objccn.io/products/core-data/preview/artwork/moody.png" alt="示例应用程序 - Moody" />
 <p class="caption">示例应用程序 - “Moody”</p>
 </div>
 <h2 id="core-data-架构">Core Data 架构</h2>
 <p>为了更好的理解 Core Data 的架构，在我们开始创建这个示例应用之前，让我们先来看看它的主要组成部分。我们将会在<a href="#accessing-data">第二部分</a>中详细介绍所有这些部分是如何协同工作的。</p>
 <p>一个基本的 Core Data 栈由四个主要部分组成：托管对象 (managed objects) (<code>NSManagedObject</code>)，托管对象上下文 (managed object context) (<code>NSManagedObjectContext</code>)，持久化存储协调器 (persistent store coordinator) (<code>NSPersistentStoreCoordinator</code>)，以及持久化存储 (persistent store) (<code>NSPersistentStore</code>)：</p>
 <div class="figure">
-<img src="artwork/pdf-as-png/stack.pdf.png" alt="Core Data 栈的基本组成部分" />
+<img src="https://objccn.io/products/core-data/preview/artwork/pdf-as-png/stack.pdf.png" alt="Core Data 栈的基本组成部分" />
 <p class="caption">Core Data 栈的基本组成部分</p>
 </div>
 <p>托管对象位于这张图的最上层，它是架构里最有趣的部分，同时也是我们的数据模型 - 在这个例子里，它是 <code>Mood</code> 类的实例们。<code>Mood</code> 需要是 <code>NSManagedObject</code> 类的子类，这样它才能与 Core Data 其他的部分进行集成。每个 <code>Mood</code> 实例表示了一个 <strong>mood</strong>，也就是用户用相机拍摄的照片。</p>
@@ -69,14 +69,14 @@
 <p>Core Data 自身就支持很多数据类型：数值类型 (整数和不同大小的浮点数，以及十进制数值)，字符串，布尔值，日期，二进制数据，以及存储着实现了 <code>NSCoding</code> 协议的对象或者是提供了自定义值转换器 (value transformer) 的对象的可转换类型。</p>
 <p>对于 <strong>Mood</strong> 实体，我们创建了两个属性：一个是日期类型 (被称为 <code>date</code>)，另一个是可转换类型 (被称为 <code>colors</code>)。属性的名称应该以小写字母开头，就像类或者结构体里的属性一样。<code>colors</code> 属性是一个数组，里面都是 <code>UIColor</code> 对象，因为 <code>NSArray</code> 和 <code>UIColor</code> 已经遵循了 <code>NSCoding</code> 协议，所以我们可以把这样的数组直接存入一个可转换类型的属性里：</p>
 <div class="figure">
-<img src="artwork/model-editor.png" alt="在 Xcode 模型编辑器里的 Mood 实体" />
+<img src="https://objccn.io/products/core-data/preview/artwork/model-editor.png" alt="在 Xcode 模型编辑器里的 Mood 实体" />
 <p class="caption">在 Xcode 模型编辑器里的 <strong>Mood</strong> 实体</p>
 </div>
 <h4 id="属性选项">属性选项</h4>
 <p>两个属性都有更多的一些选项可以让我们调整。我们把 <code>date</code> 属性标记为必选的 (non-optional) 和可索引的 (indexed)。<code>colors</code> 数组也标记为必选属性。</p>
 <p>必选属性必须要赋给它们恰当的值，才能保存这些数据。把一个属性标记为可索引时，Core Data 会在底层 SQLite 数据库表里创建一个索引。索引可以加速这个属性的搜索和排序，但代价是插入数据时的性能下降和额外的存储空间。在我们的例子里，我们会以 mood 对象的时间来排序，所以把 date 属性标记为可索引是有意义的。我们后面会在<a href="#performance">性能</a>和<a href="#profiling">性能分析</a>这些章节里深入探讨这个主题。</p>
 <div class="figure">
-<img src="artwork/pdf-as-png/mood-entity.pdf.png" alt="Mood 实体的属性" />
+<img src="https://objccn.io/products/core-data/preview/artwork/pdf-as-png/mood-entity.pdf.png" alt="Mood 实体的属性" />
 <p class="caption"><strong>Mood</strong> 实体的属性</p>
 </div>
 <h3 id="托管对象子类">托管对象子类</h3>
@@ -223,7 +223,7 @@
 <p>我们使用 <code>NSFetchedResultsController</code> 类来协调模型和视图。在我们的例子里，我们用它来让 table view 和 Core Data 中的 mood 对象保持一致。fetched results controller 还可以用于其他场景，比如在使用 collection view 的时候。</p>
 <p>使用 fetched results controllers 的主要优势是：我们不是直接执行获取请求然后把结果交给 table view，而是在当底层数据有变化的时候，它能通知我们，让我们很容易地更新 table view。为了做到这一点，fetched results controllers 监听了一个通知，这个通知会由托管对象上下文在它之中的数据发生改变的时候所发出 (<a href="#changing-and-saving-data">修改和保存数据</a>这一章会更多有关于这方面的内容)。fetched results controllers 会根据底层获取请求的排序，计算出哪些对象的位置发生了变化，哪些对象是新插入的等等，然后把这些改动报告给它的代理：</p>
 <div class="figure">
-<img src="artwork/pdf-as-png/frc.pdf.png" alt="fetched results controller 与 table view 是如何交互的" />
+<img src="https://objccn.io/products/core-data/preview/artwork/pdf-as-png/frc.pdf.png" alt="fetched results controller 与 table view 是如何交互的" />
 <p class="caption">fetched results controller 与 table view 是如何交互的</p>
 </div>
 <p>为了初始化 mood table view 的 fetched results controller，我们在 <code>UITableViewController</code> 子类的 <code>viewDidLoad</code> 方法里调用了 <code>setupTableView</code> 这个方法。<code>setupTableView</code> 使用了前面提到的获取请求来创建一个 fetched results controller：</p>
@@ -417,7 +417,7 @@
 </ol>
 <p>所有的一切操作都是同步发生的，而且直到获取请求完成为止，托管对象上下文都会被阻塞。在 iOS 10/macOS 10.12 之前的版本里，持久化存储协调器也会被阻塞。</p>
 <div class="figure">
-<img src="artwork/pdf-as-png/fetch-request.pdf.png" alt="一个获取请求会一直降入到 SQLite 存储并往返" />
+<img src="https://objccn.io/products/core-data/preview/artwork/pdf-as-png/fetch-request.pdf.png" alt="一个获取请求会一直降入到 SQLite 存储并往返" />
 <p class="caption">一个获取请求会一直降入到 SQLite 存储并往返</p>
 </div>
 <p>现在，你有了一个托管对象数组，用来表征你在获取请求里要求的数据。但是，由于这些对象是惰值，在你实际访问这些对象的数据时还会发生一些其他事情。我们将在下一小节里讨论它们。</p>
@@ -475,7 +475,7 @@
 <h2 id="core-data-栈的性能特质">Core Data 栈的性能特质</h2>
 <p>一个主要的性能提升来源是，理解并正确地应用 Core Data 栈的性能特质：</p>
 <div class="figure">
-<img src="artwork/pdf-as-png/stack-tiers.pdf.png" alt="Core Data 栈的不同层级有不同的性能特质" />
+<img src="https://objccn.io/products/core-data/preview/artwork/pdf-as-png/stack-tiers.pdf.png" alt="Core Data 栈的不同层级有不同的性能特质" />
 <p class="caption">Core Data 栈的不同层级有不同的性能特质</p>
 </div>
 <p>我们可以大致的把 Core Data 栈分成三层。顺着栈从上往下看，每往下一层的复杂度都指数级增加 - 即对性能的影响会显著的提高。这是一个极度简化但同时却能帮助我们理解 Core Data 性能测试的强大的心智模型 (mental model)。</p>
@@ -578,7 +578,7 @@
 </code></pre></div>
 <p>将一个“上下文已保存”通知合并到另一个上下文后，会在这个上下文中刷新被更改的对象，移除被删掉的对象，并将刚被插入的对象进行惰值化 (fault) 处理。然后这个上下文会发送一个对象已变更的通知，其中包含了位于这个上下文中的对象的所有更改：</p>
 <div class="figure">
-<img src="artwork/pdf-as-png/merge-changes.pdf.png" alt="通过合并上下文已保存通知来协调不同上下文之间的更改" />
+<img src="https://objccn.io/products/core-data/preview/artwork/pdf-as-png/merge-changes.pdf.png" alt="通过合并上下文已保存通知来协调不同上下文之间的更改" />
 <p class="caption">通过合并上下文已保存通知来协调不同上下文之间的更改</p>
 </div>
 <p>这就是本章第二个重要的知识点，它同样能让你避免并发所带来的问题：不同上下文中的操作必须<strong>完全分离</strong>，上下文之间的数据交换<strong>只能</strong>通过“上下文已保存”通知进行，切记不要在不同上下文之间随意调度。</p>
@@ -595,7 +595,7 @@
 <span class="pyg-p">}</span>
 </code></pre></div>
 <div class="figure">
-<img src="artwork/pdf-as-png/passing-object-id-single-coordinator.pdf.png" alt="通过将对象 ID 从一个上下文传递到另一个上下文来处理托管对象" />
+<img src="https://objccn.io/products/core-data/preview/artwork/pdf-as-png/passing-object-id-single-coordinator.pdf.png" alt="通过将对象 ID 从一个上下文传递到另一个上下文来处理托管对象" />
 <p class="caption">通过将对象 ID 从一个上下文传递到另一个上下文来处理托管对象</p>
 </div>
 <p>你只能将对象的 ID 传递到另一个上下文中并且重新实例化该对象，这个做法从技术上来讲完全正确。不过我们还有另一个方法，它能够保证对象的行缓存条目一直有效。这个特性非常有用，因为比起直接从 SQLite 中获取那些对象的惰值，从行缓存中获取它们可以使目标上下文更快地进行数据填充。</p>
@@ -626,7 +626,7 @@
 </code></pre></div>
 <p>(为了简短起见，在上面的代码片段中我们使用了强制解包来获取可选值。当你在实际使用时，务必使用 <code>guard</code> 关键字来获取这些值。) 注意在这种情况下，我们并不需要像之前的方法那样在 <code>perform</code> 中保留对象的引用来保证行缓存条目有效，因为两个上下文并没有共享同个协调器，所以它们无法共享行缓存。</p>
 <div class="figure">
-<img src="artwork/pdf-as-png/passing-object-id-two-coordinators.pdf.png" alt="在两个连接到不同的持久化存储协调器的上下文中处理托管对象" />
+<img src="https://objccn.io/products/core-data/preview/artwork/pdf-as-png/passing-object-id-two-coordinators.pdf.png" alt="在两个连接到不同的持久化存储协调器的上下文中处理托管对象" />
 <p class="caption">在两个连接到不同的持久化存储协调器的上下文中处理托管对象</p>
 </div>
 <p>上面所介绍的就是在 Core Data 中使用多个上下文的一些基本方法。这些方法实际使用起来其实并不复杂，只要你能够严格遵守以下规则：不同上下文中的操作必须完全分离，进行任何操作前必须调度到上下文所处的队列中，在不同的上下文之间只能传递对象的 ID。</p>
