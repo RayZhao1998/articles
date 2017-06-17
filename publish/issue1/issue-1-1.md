@@ -8,6 +8,7 @@ View controllers 通常是 iOS 项目中最大的文件，并且它们包含了�
 
 举个例，在示例项目中，有个 `PhotosViewController` 类，它有以下几个方法：
 
+```javascript
 
     # pragma mark Pragma
 
@@ -28,7 +29,7 @@ View controllers 通常是 iOS 项目中最大的文件，并且它们包含了�
         cell.label.text = photo.name;
         return cell;
     }
-
+```
 
 这些代码基本都是围绕数组做一些事情，更针对地说，是围绕 view controller 所管理的 photos 数组做一些事情。我们可以尝试把数组相关的代码移到[单独的类][6]中。我们使用一个 block 来设置 cell，也可以用 delegate 来做这件事，这取决于你的习惯。
 
