@@ -733,7 +733,7 @@
     <h3 class="panel-title">抱歉，本章内容不包含于预览中</h3>
   </div>
   <div class="panel-body">
-    <div>请考虑<a href="https://sites.fastspring.com/onevcat/instant/advanced-swift" target="_blank">购买本书</a>，或者<a href="/products/advanced-swift/">点击这里</a>了解更多关于本书的内容。</div>
+    <div>请考虑<router-link to="/goodcart"  >购买本书</router-link>，或者<router-link to="/products/advanced-swift/">点击这里</router-link>了解更多关于本书的内容。</div>
   </div>
 </div>
 
@@ -800,7 +800,7 @@
     <h3 class="panel-title">抱歉，本章内容不包含于预览中</h3>
   </div>
   <div class="panel-body">
-    <div>请考虑<a href="https://sites.fastspring.com/onevcat/instant/advanced-swift" target="_blank">购买本书</a>，或者<a href="/products/advanced-swift/">点击这里</a>了解更多关于本书的内容。</div>
+    <div>请考虑<router-link to="/goodcart"  >购买本书</router-link>，或者<router-link to="/products/advanced-swift/">点击这里</router-link>了解更多关于本书的内容。</div>
   </div>
 </div>
 
@@ -834,7 +834,7 @@
     <h3 class="panel-title">抱歉，本章内容不包含于预览中</h3>
   </div>
   <div class="panel-body">
-    <div>请考虑<a href="https://sites.fastspring.com/onevcat/instant/advanced-swift" target="_blank">购买本书</a>，或者<a href="/products/advanced-swift/">点击这里</a>了解更多关于本书的内容。</div>
+    <div>请考虑<router-link to="/goodcart"  >购买本书</router-link>，或者<router-link to="/products/advanced-swift/">点击这里</router-link>了解更多关于本书的内容。</div>
   </div>
 </div>
 
@@ -880,7 +880,7 @@
     <h3 class="panel-title">抱歉，本章内容不包含于预览中</h3>
   </div>
   <div class="panel-body">
-    <div>请考虑<a href="https://sites.fastspring.com/onevcat/instant/advanced-swift" target="_blank">购买本书</a>，或者<a href="/products/advanced-swift/">点击这里</a>了解更多关于本书的内容。</div>
+    <div>请考虑<router-link to="/goodcart"  >购买本书</router-link>，或者<router-link to="/products/advanced-swift/">点击这里</router-link>了解更多关于本书的内容。</div>
   </div>
 </div>
 
@@ -925,7 +925,7 @@
     <h3 class="panel-title">抱歉，本章内容不包含于预览中</h3>
   </div>
   <div class="panel-body">
-    <div>请考虑<a href="https://sites.fastspring.com/onevcat/instant/advanced-swift" target="_blank">购买本书</a>，或者<a href="/products/advanced-swift/">点击这里</a>了解更多关于本书的内容。</div>
+    <div>请考虑<router-link to="/goodcart"  >购买本书</router-link>，或者<router-link to="/products/advanced-swift/">点击这里</router-link>了解更多关于本书的内容。</div>
   </div>
 </div>
 
@@ -970,7 +970,7 @@
     <h3 class="panel-title">抱歉，本章内容不包含于预览中</h3>
   </div>
   <div class="panel-body">
-    <div>请考虑<a href="https://sites.fastspring.com/onevcat/instant/advanced-swift" target="_blank">购买本书</a>，或者<a href="/products/advanced-swift/">点击这里</a>了解更多关于本书的内容。</div>
+    <div>请考虑<router-link to="/goodcart"  >购买本书</router-link>，或者<router-link to="/products/advanced-swift/">点击这里</router-link>了解更多关于本书的内容。</div>
   </div>
 </div>
 
@@ -1014,7 +1014,7 @@
     <h3 class="panel-title">抱歉，本章内容不包含于预览中</h3>
   </div>
   <div class="panel-body">
-    <div>请考虑<a href="https://sites.fastspring.com/onevcat/instant/advanced-swift" target="_blank">购买本书</a>，或者<a href="/products/advanced-swift/">点击这里</a>了解更多关于本书的内容。</div>
+    <div>请考虑<router-link to="/goodcart"  >购买本书</router-link>，或者<router-link to="/products/advanced-swift/">点击这里</router-link>了解更多关于本书的内容。</div>
   </div>
 </div>
 
@@ -1065,7 +1065,7 @@
     <h3 class="panel-title">抱歉，本章内容不包含于预览中</h3>
   </div>
   <div class="panel-body">
-    <div>请考虑<a href="https://sites.fastspring.com/onevcat/instant/advanced-swift" target="_blank">购买本书</a>，或者<a href="/products/advanced-swift/">点击这里</a>了解更多关于本书的内容。</div>
+    <div>请考虑<router-link to="/goodcart"  >购买本书</router-link>，或者<router-link to="/products/advanced-swift/">点击这里</router-link>了解更多关于本书的内容。</div>
   </div>
 </div>
 
@@ -1119,7 +1119,7 @@
     <h3 class="panel-title">抱歉，本章内容不包含于预览中</h3>
   </div>
   <div class="panel-body">
-    <div>请考虑<a href="https://sites.fastspring.com/onevcat/instant/advanced-swift" target="_blank">购买本书</a>，或者<a href="/products/advanced-swift/">点击这里</a>了解更多关于本书的内容。</div>
+    <div>请考虑<router-link to="/goodcart"  >购买本书</router-link>，或者<router-link to="/products/advanced-swift/">点击这里</router-link>了解更多关于本书的内容。</div>
   </div>
 </div>
 
