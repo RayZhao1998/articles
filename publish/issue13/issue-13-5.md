@@ -4,8 +4,8 @@
 
 在这篇文章中，我们介绍了一种称之为 [VIPER](http://mutualmobile.github.io/blog/2013/12/04/viper-introduction/) 的 iOS 应用架构的方式。VIPER 已经在很多大型的项目上成功实践，但是出于本文的目的我们将通过一个待办事项清单 (to-do app) 来介绍 VIPER 。你可以在 [GitHub](https://github.com/objcio/issue-13-viper) 上关注这个项目。
 
-<video style="display:block;max-width:316px;height:auto;border:0;" poster="{{site.images_path}}/issue-13/2014-06-07-viper-screenshot.png" controls="1">
-  <source src="https://objccn.io/images/issues//issue-13/2014-06-07-viper-preview.mp4"></source>
+<video style="display:block;max-width:316px;height:auto;border:0;" poster="https://objccn.io/images/issue-13/2014-06-07-viper-screenshot.png" controls="1">
+  <source src="https://objccn.io/images/issues/issue-13/2014-06-07-viper-preview.mp4"></source>
 </video>
 
 ## 什么是 VIPER？
