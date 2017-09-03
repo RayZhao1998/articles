@@ -110,6 +110,7 @@
 </div></code></pre><div>
 <p>有序集合的核心是将多个元素按一定顺序放置，所以实现 <code>BidirectionalCollection</code> 是一个合情合理的需求，这允许从前至后遍历，也允许自后往前遍历。</p>
 <p><code>SetAlgebra</code> 包含所有的常规集合操作，像是 <code>union(_:)</code>、<code>isSuperset(of:)</code>、<code>insert(_:)</code> 和 <code>remove(_:)</code>，以及创建空集合或者包含特定内容的集合的初始化方法。如果我们志在实现产品级的有序集合，那么毫无疑问，没有理由不完整实现该协议。然而，为了让这本书在可控范围内，我们将只实现 <code>SetAlgebra</code> 协议中很小的一部分，包括 <code>contains</code> 和 <code>insert</code> 两个方法，再加上用于创建空集合的无参初始化方法：</p>
+<div class="highlight"><pre><code>
 <div class="code swift shared">
 <div class="line i0"><span class="k">public</span> <span class="k">protocol</span> <span class="t">SortedSet</span>: <span class="t">BidirectionalCollection</span>, <span class="t">CustomStringConvertible</span>, <span class="t">CustomPlaygroundQuickLookable</span> {</div>
 <div class="line i1"><span class="k">associatedtype</span> <span class="t">Element</span>: <span class="t">Comparable</span></div>
@@ -118,7 +119,7 @@
 <div class="line i1"><span class="k">func</span> <span class="i">contains</span>(<span class="k">_</span> <span class="i">element</span>: <span class="t">Element</span>) -&gt; <span class="t">Bool</span></div>
 <div class="line i1"><span class="k">mutating</span> <span class="k">func</span> <span class="i">insert</span>(<span class="k">_</span> <span class="i">newElement</span>: <span class="t">Element</span>) -&gt; (<span class="i">inserted</span>: <span class="t">Bool</span>, <span class="i">memberAfterInsert</span>: <span class="t">Element</span>)</div>
 <div class="line i0">}</div>
-</div>
+</div></code></pre></div>
 <p>作为放弃完整实现 <code>SetAlgebra</code> 的交换，我们添加了 <code>CustomStringConvertible</code> 和 <code>CustomPlaygroundQuickLookable</code>；这样一来，当我们想要在示例代码和 playground 中显示有序集合的内容时，能够稍微得心应手一些。</p>
 <p>我们需要知道的是，<code>BidirectionalCollection</code> 有大约 30 项要求 (像是 <code>startIndex</code>、<code>index(after:)</code>、<code>map</code> 和 <code>lazy</code>)，它们中的大多数有默认实现。在这本书中，我们将聚焦于要求的绝对最小集，包括 <code>startIndex</code>、<code>endIndex</code>、<code>subscript</code>、<code>index(after:)</code>、<code>index(before:)</code>、<code>formIndex(after:)</code>、<code>formIndex(before:)</code> 和 <code>count</code>。大多数情况下，我们只实现这些方法，尽管通常来讲，进行专门的处理能获得更好的性能，但我们还是选择将其它方法保持默认实现的状态。不过有一个例外，因为 <code>forEach</code> 是 <code>contains</code> 的好搭档，所以我们也会专门实现它。</p>
 <h2 id="语义要求"><span class="header-section-number">1.3</span> 语义要求</h2>
@@ -139,6 +140,7 @@ TODO [Ole]: Note for the future: In Swift 4 `Sequence` will most likely get an a
 <p>虽然我们还没有具体实现 <code>SortedSet</code>，但是果断先来定义一个通用扩展又何尝不是一个激动人心的选择呢！</p>
 <h2 id="打印有序集合"><span class="header-section-number">1.4</span> 打印有序集合</h2>
 <p>提供一个 <code>description</code> 的默认实现能够让我们免去今后设置输出格式的麻烦。由于所有的有序集都是集合类型，我们完全可以使用标准集合类型的方法来打印它们，就像标准库的数组和集合一样，将元素用逗号分隔，并用括号括起来：</p>
+<div class="highlight"><pre><code>
 <div class="code swift shared">
 <div class="line i0"><span class="k">extension</span> <span class="t">SortedSet</span> {</div>
 <div class="line i1"><span class="k">public</span> <span class="k">var</span> <span class="i">description</span>: <span class="t">String</span> {</div>
@@ -146,8 +148,9 @@ TODO [Ole]: Note for the future: In Swift 4 `Sequence` will most likely get an a
 <div class="line i2"><span class="k">return</span> <span class="s">&quot;[</span>\<span class="s">(</span><span class="i">contents</span><span class="s">)]&quot;</span></div>
 <div class="line i1">}</div>
 <div class="line i0">}</div>
-</div>
+</div></code></pre></div>
 <p>此外，为 <code>customPlaygroundQuickLook</code> 创建一个默认实现也很有价值，这样我们的集合类型在 playground 中的输出也能稍微优美一些。一眼看上去，默认的 Quick Look 视图很难理解，所以我使用属性字符串 (attributed string)，将 <code>description</code> 的字体设置为等宽字体，并以此来代替原来的视图。</p>
+<div class="highlight"><pre><code>
 <div class="code swift shared">
 <div class="line i0"><span class="k">#if</span> <span class="i">os</span>(<span class="i">iOS</span>)</div>
 <div class="line i0"><span class="k">import</span> <span class="t">UIKit</span></div>
@@ -176,7 +179,7 @@ TODO [Ole]: Note for the future: In Swift 4 `Sequence` will most likely get an a
 <div class="line i2"><span class="k">#endif</span></div>
 <div class="line i1">}</div>
 <div class="line i0">}</div>
-</div>
+</div></code></pre></div>
 <h1 id="有序数组-sorted-arrays"><span class="header-section-number">2</span> 有序数组 (Sorted Arrays)</h1>
 <p>想要实现 <code>SortedSet</code>，也许最简单的方法是将集合的元素存储在一个数组中。这引出了一个像下面这样的简单结构的定义：</p>
 <div class="highlight"><pre><code>
