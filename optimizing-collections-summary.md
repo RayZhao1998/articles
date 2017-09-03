@@ -504,7 +504,7 @@ TODO [Ole]: Note for the future: In Swift 4 `Sequence` will most likely get an a
     <h3 class="panel-title">抱歉，本章内容不包含于预览中</h3>
   </div>
   <div class="panel-body">
-    <div>请考虑<a href="/payment/optimizing-collections">购买本书</a>，或者<a href="/products/optimizing-collections/">点击这里</a>了解更多关于本书的内容。</div>
+    <div>请考虑<a href="/goodscart">购买本书</a>，或者<a href="/products/optimizing-collections/">点击这里</a>了解更多关于本书的内容。</div>
   </div>
 </div>
 
@@ -555,7 +555,7 @@ TODO [Ole]: Note for the future: In Swift 4 `Sequence` will most likely get an a
     <h3 class="panel-title">抱歉，本章内容不包含于预览中</h3>
   </div>
   <div class="panel-body">
-    <div>请考虑<a href="/payment/optimizing-collections">购买本书</a>，或者<a href="/products/optimizing-collections/">点击这里</a>了解更多关于本书的内容。</div>
+    <div>请考虑<a href="/goodscart">购买本书</a>，或者<a href="/products/optimizing-collections/">点击这里</a>了解更多关于本书的内容。</div>
   </div>
 </div>
 
@@ -627,7 +627,7 @@ TODO [Ole]: Note for the future: In Swift 4 `Sequence` will most likely get an a
     <h3 class="panel-title">抱歉，本章内容不包含于预览中</h3>
   </div>
   <div class="panel-body">
-    <div>请考虑<a href="/payment/optimizing-collections">购买本书</a>，或者<a href="/products/optimizing-collections/">点击这里</a>了解更多关于本书的内容。</div>
+    <div>请考虑<a href="/goodscart">购买本书</a>，或者<a href="/products/optimizing-collections/">点击这里</a>了解更多关于本书的内容。</div>
   </div>
 </div>
 
@@ -763,7 +763,7 @@ TODO [Ole]: Note for the future: In Swift 4 `Sequence` will most likely get an a
     <h3 class="panel-title">抱歉，本章内容不包含于预览中</h3>
   </div>
   <div class="panel-body">
-    <div>请考虑<a href="/payment/optimizing-collections">购买本书</a>，或者<a href="/products/optimizing-collections/">点击这里</a>了解更多关于本书的内容。</div>
+    <div>请考虑<a href="/goodscart">购买本书</a>，或者<a href="/products/optimizing-collections/">点击这里</a>了解更多关于本书的内容。</div>
   </div>
 </div>
 
@@ -814,7 +814,7 @@ TODO [Ole]: Note for the future: In Swift 4 `Sequence` will most likely get an a
     <h3 class="panel-title">抱歉，本章内容不包含于预览中</h3>
   </div>
   <div class="panel-body">
-    <div>请考虑<a href="/payment/optimizing-collections">购买本书</a>，或者<a href="/products/optimizing-collections/">点击这里</a>了解更多关于本书的内容。</div>
+    <div>请考虑<a href="/goodscart">购买本书</a>，或者<a href="/products/optimizing-collections/">点击这里</a>了解更多关于本书的内容。</div>
   </div>
 </div>
 
