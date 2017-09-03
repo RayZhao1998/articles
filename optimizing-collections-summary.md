@@ -102,11 +102,12 @@
 <p>在开始之前，我们首先需要确定一个想要解决的课题。目前标准库中缺少一个非常常用的数据结构：有序集合 (sorted set) 类型，这是一个类似 <code>Set</code> 的集合类型，但是要求元素是 <code>Comparable</code> (可比较的)，而非 <code>Hashable</code> (可哈希的)，此外，它的元素保持升序排列。接下来，让我们卯足火力来实现一个这样的集合类型吧！</p>
 <p>这本书将始终围绕有序集合问题进行，对于用多种方法构建数据结构来说，无疑这会是一个很好的示范。之后我们将会创造一些独立的解决方案，并 (举例) 说明一些有趣的 Swift 编码技术。</p>
 <p>现在，我们来起草一份想要实现的 API 协议作为开始。理想情况下，我们希望创建遵循下述协议的具体类型：</p>
+<div class="highlight"><pre><code>
 <div class="code swift nobuild">
 <div class="line i0"><span class="k">public</span> <span class="k">protocol</span> <span class="t">SortedSet</span>: <span class="t">BidirectionalCollection</span>, <span class="t">SetAlgebra</span> {</div>
 <div class="line i1"><span class="k">associatedtype</span> <span class="t">Element</span>: <span class="t">Comparable</span></div>
 <div class="line i0">}</div>
-</div>
+</div></code></pre><div>
 <p>有序集合的核心是将多个元素按一定顺序放置，所以实现 <code>BidirectionalCollection</code> 是一个合情合理的需求，这允许从前至后遍历，也允许自后往前遍历。</p>
 <p><code>SetAlgebra</code> 包含所有的常规集合操作，像是 <code>union(_:)</code>、<code>isSuperset(of:)</code>、<code>insert(_:)</code> 和 <code>remove(_:)</code>，以及创建空集合或者包含特定内容的集合的初始化方法。如果我们志在实现产品级的有序集合，那么毫无疑问，没有理由不完整实现该协议。然而，为了让这本书在可控范围内，我们将只实现 <code>SetAlgebra</code> 协议中很小的一部分，包括 <code>contains</code> 和 <code>insert</code> 两个方法，再加上用于创建空集合的无参初始化方法：</p>
 <div class="code swift shared">
@@ -331,6 +332,7 @@ TODO [Ole]: Note for the future: In Swift 4 `Sequence` will most likely get an a
 <p>当我们谈论一个算法的性能时，我们常用所谓的<strong>大 O 符号</strong>来描述执行时间受输入元素个数的影响所发生的改变，记为：<span class="math inline">\(O(1)\)</span>、<span class="math inline">\(O(n)\)</span>、<span class="math inline">\(O(n^2)\)</span>、<span class="math inline">\(O(\log n)\)</span>、<span class="math inline">\(O(n\log n)\)</span> 等。这个符号在数学上有明确的定义，不过你不需要太关注，理解我们在为算法<strong>增长率</strong> (growth rate) 分类时使用这个符号作为简写就足够了。当输入元素个数倍增时，一个 <span class="math inline">\(O(n)\)</span> 的算法会花费不超过两倍的时间，但是一个 <span class="math inline">\(O(n^2)\)</span> 的算法可能比从前慢四倍，同时一个 <span class="math inline">\(O(1)\)</span> 的算法的执行时间并不大会受输入影响。</p>
 <p>我们可以基于数学来分析我们的算法，合理地推导出渐进复杂度估计值。分析能为我们提供关于性能的有用指标，但它不是绝对的；就其本质而言，由于依赖简化的模型，与真实世界中的实际硬件的行为既有可能相匹配，也有可能存在差池。</p>
 <p>为了了解我们的 <code>SortedSet</code> 的真实性能，运行一些性能测试是个好办法。例如，下述代码可以对四个 <code>SortedArray</code> 上的基础操作进行微型性能测试，它们分别是：<code>insert</code>、<code>contains</code>、<code>forEach</code> 和用 <code>for</code> 语句实现的迭代：</p>
+<div class="highlight"><pre><code>
 <div class="code swift nobuild">
 <div class="line i0"><span class="k">func</span> <span class="i">benchmark</span>(<span class="i">count</span>: <span class="t">Int</span>, <span class="i">measure</span>: (<span class="t">String</span>, () -&gt; <span class="t">Void</span>) -&gt; <span class="t">Void</span>) {</div>
 <div class="line i1"><span class="k">var</span> <span class="i">set</span> = <span class="t">SortedArray</span>&lt;<span class="t">Int</span>&gt;()</div>
@@ -366,8 +368,9 @@ TODO [Ole]: Note for the future: In Swift 4 `Sequence` will most likely get an a
 <div class="line i2"><span class="k">guard</span> <span class="i">i</span> == <span class="i">input</span>.<span class="i">count</span> <span class="k">else</span> { <span class="i">fatalError</span>() }</div>
 <div class="line i1">}</div>
 <div class="line i0">}</div>
-</div>
+</div></code></pre></div>
 <p><code>measure</code> 参数是测量其闭包执行时间的函数，第一个参数表示它的名字。驱动 <code>benchmark</code> 函数的一个简单方法是在不同元素个数的循环中调用它，并打印测量结果：</p>
+<div class="highlight"><pre><code>
 <div class="code swift nobuild">
 <div class="line i0"><span class="k">for</span> <span class="i">size</span> <span class="k">in</span> (<span class="n">0</span> ..&lt; <span class="n">20</span>).<span class="i">map</span>({ <span class="n">1</span> &lt;&lt; <span class="i">$0</span> }) {</div>
 <div class="line i1"><span class="i">benchmark</span>(<span class="i">size</span>: <span class="i">size</span>) { <span class="i">name</span>, <span class="i">body</span> <span class="k">in</span> </div>
@@ -377,7 +380,7 @@ TODO [Ole]: Note for the future: In Swift 4 `Sequence` will most likely get an a
 <div class="line i2"><span class="i">print</span>(<span class="s">&quot;</span>\<span class="s">(</span><span class="i">name</span><span class="s">), </span>\<span class="s">(</span><span class="i">size</span><span class="s">), </span>\<span class="s">(</span><span class="i">end</span>.<span class="i">timeIntervalSince</span>(<span class="i">start</span>)<span class="s">)&quot;</span>)</div>
 <div class="line i1">}</div>
 <div class="line i0">}</div>
-</div>
+</div></code></pre></div>
 <p>这是我实际用来画出下面图表时所使用的 <a href="https://github.com/lorentey/Attabench">Attabench</a> 性能测试框架的简化版。真实的代码中含有更多的测试模板之类的东西，不过实际的测量方式 (<code>measure</code> 闭包中的代码) 并无二致。</p>
 <p>绘制我们的性能测试结果，得到图 2.1。 注意，在这个图表中，我们对两个坐标轴都使用了对数标度 (logarithmic scales)，这意味着：向右移动一个刻度，输入值的数量翻一倍；向上移动一条水平线，执行时间增长为十倍。</p>
 <div class="figure">
@@ -395,9 +398,10 @@ TODO [Ole]: Note for the future: In Swift 4 `Sequence` will most likely get an a
 <p><code>contains</code> 的曲线带来了两个意料之外的事实。其一是：在元素个数为 2 的幂次方时，会出现一个明显的尖峰。这是因为在二分查找和运行性能测试的 MacBook 的二级 (L2) 缓存架构之间存在一个有意思的相互作用。缓存被分为一些 64 字节的<strong>行</strong> (line)，其中每一部分都可能持有来自一系列特定物理地址的内存中的内容。由于一个不幸的巧合，如果存储大小接近于 2 的幂次方时，二分查找算法的连续查找操作可能会落入相同的 L2 缓存行，从而迅速耗尽它的容量，其它行却处于未使用状态。这个现象被称为<strong>缓存行别名</strong> (cache line aliasing)，它会导致一个极具戏剧性的性能衰退：<code>contains</code> 峰值耗费的执行时间约为相邻元素个数耗时的两倍。</p>
 <!-- citation: https://www.pvk.ca/Blog/2012/07/30/binary-search-is-a-pathological-case-for-caches/ -->
 <p>消除这些尖峰的一种方法是改用<strong>三分查找</strong> (ternary search)，每次迭代时将缓存等分为<strong>三个</strong>部分。还有一种更简单的解决方案，选择一个略微偏离中心的位置作为中心索引来扰乱二分查找。如果选择这个方案，我们只需要在 <code>index(for:)</code> 的实现中修改一行即可，在中心索引上添加一个额外的小偏移量：</p>
+<div class="highlight"><pre><code>
 <div class="code swift nobuild">
 <div class="line i0"><span class="k">let</span> <span class="i">middle</span> = <span class="i">start</span> + (<span class="i">end</span> - <span class="i">start</span>) / <span class="n">2</span> + (<span class="i">end</span> - <span class="i">start</span>) &gt;&gt; <span class="n">6</span></div>
-</div>
+</div></code></pre></div>
 <p>这样的话，中间索引将落在两个端点的 <span class="math inline">\(33/64\)</span> 处，足以避免缓存行别名现象。不幸的是，代码变得稍微复杂了一点，相较于二分查找，这些偏离正中的中心索引通常会导致存储查找次数小幅增加。这样看来，消除 2 的幂次方的尖峰所需付出的代价是总体上的衰退，在图表中也得到了证明，如 图 2.3 所示。</p>
 <div class="figure">
 <img src="https://objccn.io/products/optimizing-collections/preview/Images/SortedArray-contains.png" alt="图 2.3: 比较二分查找 (contains) 和使用中心索引偏移来避免缓存行别名的版本 (contains2) 的性能。" /><figcaption>图 2.3: 比较二分查找 (<code>contains</code>) 和使用中心索引偏移来避免缓存行别名的版本 (<code>contains2</code>) 的性能。</figcaption>
