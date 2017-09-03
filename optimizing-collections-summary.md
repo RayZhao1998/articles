@@ -20,7 +20,9 @@
 <h2 id="如何阅读本书" class="unnumbered">如何阅读本书</h2>
 <p>我没有打破常规，所以本书的阅读顺序更倾向于从前至后。假设读者按照正序阅读，会发现书中有不少内容需要与前面的章节参照阅读。话虽然这么说，但按照自己的喜好的顺序来阅读也是可以的。不过答应我，这样做的时候就算感觉并不那么顺畅，也不要惆怅，好吗？</p>
 <p>这本书包含大量源码。在 playground 版本的书籍中，几乎所有代码都可以编辑，而且你所做的修改会即时反映出来。你可以通过改动代码来亲身体会所讲述的内容 – 有时候最佳的理解方式正是看一看当你改变它时会发生什么。</p>
-<p>比如说，<code>Sequence</code> 上有一个很有用的扩展方法，用于将所有元素乱序重排。那部分代码中有几个 FIXME 注释描述了代码实现存在的问题。不妨尝试修改代码来修复它们！</p>
+<p>比如说，<code>Sequence</code> 上有一个很有用的扩展方法，用于将所有元素乱序重排。那部分代码中有几个 FIXME 注释描述了代码实现存在的问题。不妨尝试修改代码来修复它们！
+
+</p><div class="highlight"><pre><code>
 <div class="code swift shared">
 <div class="line i0"><span class="k">#if</span> <span class="i">os</span>(<span class="i">mac</span>OS) || <span class="i">os</span>(<span class="i">iOS</span>) || <span class="i">os</span>(<span class="i">watchOS</span>) || <span class="i">os</span>(<span class="i">tvOS</span>)</div>
 <div class="line i0"><span class="k">import</span> <span class="t">Darwin</span> <span class="c">// 为了支持 arc4random_uniform()</span></div>
@@ -48,7 +50,9 @@
 <div class="line i1">}</div>
 <div class="line i0">}</div>
 </div>
+</code></pre></div>
 <p>为了说明一段代码被执行之后发生了什么，有时我会展示执行结果。作为例子，让我们来试着运行 <code>shuffled</code>，以证明每次运行都返回了新的随机顺序：</p>
+<div class="highlight"><pre><code>
 <div class="code swift">
 <div class="line i0 eval">(<span class="n">0</span> ..&lt; <span class="n">20</span>).<span class="i">shuffled</span>()</div>
 <div class="output">
@@ -62,7 +66,7 @@
 <div class="output">
 <div class="line">[10, 2, 1, 19, 4, 12, 15, 9, 14, 0, 3, 7, 6, 13, 8, 18, 5, 17, 11, 16]</div>
 </div>
-</div>
+</div></code></pre></div>
 <p>在 playground 版本的书籍中，所有输出结果都会被即时生成，因此你会在每次打开这一页时得到一组不同的乱序数字集。</p>
 <h2 id="致谢" class="unnumbered">致谢</h2>
 <p>如果没有读者们针对早期草稿给出的精彩绝伦的反馈，一定没有这本书的今天。除了我的读者们，我尤其还想要感谢 <em>Chris Eidhof</em>，他花了相当多的时间来审查早期的书稿，提出了很多详尽的反馈意见，使本书最终版得到了质的飞跃。</p>
@@ -76,6 +80,7 @@
 <h2 id="写时复制-copy-on-write-值语义"><span class="header-section-number">1.1</span> 写时复制 (copy-on-write) 值语义</h2>
 <p>不知道是否与你的想法不谋而合，我认为 Swift 集合类型中最重要的特性非<strong>写时复制值语义</strong>莫属。</p>
 <p>从本质上来说，<strong>值语义</strong>在上下文中意味着每个变量都持有一个值，而且表现得<strong>像是</strong>拥有独立的复制，所以改变一个变量持有的值并不会修改其它变量的值：</p>
+<div class="highlight"><pre><code>
 <div class="code swift">
 <div class="line i0"><span class="k">var</span> <span class="i">a</span> = [<span class="n">2</span>, <span class="n">3</span>, <span class="n">4</span>]</div>
 <div class="line i0"><span class="k">var</span> <span class="i">b</span> = <span class="i">a</span></div>
@@ -88,7 +93,7 @@
 <div class="output">
 <div class="line">[2, 3, 4]</div>
 </div>
-</div>
+</div></code></pre></div>
 <p>为了实现值语义，上述代码需要在某些时候复制数组的底层存储，以允许两个数组实例拥有不同的元素。对于简单值类型 (像是 <code>Int</code> 或 <code>CGPoint</code>) 来说，整个值直接存储在一个变量中，当初始化一个新变量，或是将新值赋给已经存在的变量时，复制都会自动发生。</p>
 <p>然而，将一个数组赋给新变量并<strong>不会</strong>发生底层存储的复制，这只会创建一个新的引用，它指向同一块在堆上分配的缓冲区，所以该操作将在常数时间内完成。直到指向共享存储的变量中有一个值被更改了 (例如：进行 <code>insert</code> 操作)，这时才会发生真正的复制。不过要注意的是，只有在改变时底层存储是共享的情况下，才会发生复制存储的操作。如果数组对它自身存储所持有的引用是唯一的，那么直接修改存储缓冲区也是安全的。</p>
 <p>当我们说 <code>Array</code> 实现了<strong>写时复制</strong>优化时，我们本质上是在对其操作性能进行一系列相关的保证，从而使它们表现得就像上面描述的一样。</p>
@@ -173,17 +178,19 @@ TODO [Ole]: Note for the future: In Swift 4 `Sequence` will most likely get an a
 </div>
 <h1 id="有序数组-sorted-arrays"><span class="header-section-number">2</span> 有序数组 (Sorted Arrays)</h1>
 <p>想要实现 <code>SortedSet</code>，也许最简单的方法是将集合的元素存储在一个数组中。这引出了一个像下面这样的简单结构的定义：</p>
+<div class="highlight"><pre><code>
 <div class="code swift">
 <div class="line i0"><span class="k">public</span> <span class="k">struct</span> <span class="t">SortedArray</span>&lt;<span class="t">Element</span>: <span class="t">Comparable</span>&gt;: <span class="t">SortedSet</span> {</div>
 <div class="line i1"><span class="k">fileprivate</span> <span class="k">var</span> <span class="i">storage</span>: [<span class="t">Element</span>] = []</div>
 <div class="line i1">&nbsp;</div>
 <div class="line i1"><span class="k">public</span> <span class="k">init</span>() {}</div>
 <div class="line i0">}</div>
-</div>
+</div></code></pre></div>
 <p>为了满足协议的要求，我们会时刻保持 <code>storage</code> 数组处于已排序的状态，故此，命其名曰 <code>SortedArray</code>。</p>
 <h2 id="二分查找"><span class="header-section-number">2.1</span> 二分查找</h2>
 <p>为了实现 <code>insert</code> 和 <code>contains</code>，我们需要一个方法，给定一个元素，该方法返回该元素在数组中应当放置的位置。</p>
 <p>如何快速实现这样一个方法呢？首先我们需要实现<strong>二分查找算法</strong>。这个算法的工作原理是，将数组一分为二，舍弃不包含我们正在查找的元素的那一半，将这个过程循环往复，直到减少到只有一个元素为止。下面是 Swift 中实现该算法的方法之一：</p>
+<div class="highlight"><pre><code>
 <div class="code swift">
 <div class="line i0"><span class="k">extension</span> <span class="t">SortedArray</span> {</div>
 <div class="line i1"><span class="k">func</span> <span class="i">index</span>(<span class="i">for</span> <span class="i">element</span>: <span class="t">Element</span>) -&gt; <span class="t">Int</span> {</div>
@@ -201,13 +208,14 @@ TODO [Ole]: Note for the future: In Swift 4 `Sequence` will most likely get an a
 <div class="line i2"><span class="k">return</span> <span class="i">start</span></div>
 <div class="line i1">}</div>
 <div class="line i0">}</div>
-</div>
+</div></code></pre></div>
 <p>值得注意的是，即使我们将集合的元素数量加倍，上述循环也仅仅只需要多进行一次迭代。这可以说是代价相当低了！人们常常说二分查找具有<strong>对数复杂度</strong> (logarithmic complexity)，具体来说就是：它的运行时间与数据规模大小大致呈对数比。(用大 O 符号来描述则是：<span class="math inline">\(O(\log n)\)</span>。)</p>
 <p>二分查找是一个巧妙的算法，看似简单，实则暗藏玄机，正确地实现它并不是一件容易的事情。二分查找包含许多索引计算，以至于发生错误的几率并不低，像是差一错误 (off-by-one errors)、溢出问题等等。举个例子：我们运用了表达式 <code>start + (end - start) / 2</code> 来计算中间索引，这看起来似乎有些歪门邪道；通常会更直观地写为 <code>(start + end) / 2</code>。然而，这两个表达式并不总是能够获得相同结果，因为第二个版本的表达式包含的加法运算可能会在集合类型元素数量过多时发生溢出，从而导致运行时错误。</p>
 <p>我希望有朝一日二分查找能被纳入 Swift 标准库。在此之前，如果什么时候你需要实现二分查找，务必找一本好的算法书籍作为参考。(尽管我认为这本书也会有一些帮助。) 还有，不要忘记测试你的代码，有时候即使是书中的代码也有 bug！我发现覆盖率 100% 的单元测试能帮助我捕获大多数错误。</p>
 <p>我们的 <code>index(for:)</code> 函数所做的事情与 <code>Collection</code> 的标准 <code>index(of:)</code> 方法很相似，不同的是，即使要查找的元素并不存在于当前集合，我们的版本也还是能返回一个有效索引。这个细微但是十分重要的不同点能够让 <code>index(for:)</code> 在插入操作中也相当好用。</p>
 <h2 id="查找方法"><span class="header-section-number">2.2</span> 查找方法</h2>
 <p>提到 <code>index(of:)</code>，我认为借助 <code>index(for:)</code> 来定义它也不失为一个好主意，这样一来它也可以用到更好的算法：</p>
+<div class="highlight"><pre><code>
 <div class="code swift">
 <div class="line i0"><span class="k">extension</span> <span class="t">SortedArray</span> {</div>
 <div class="line i1"><span class="k">public</span> <span class="k">func</span> <span class="i">index</span>(<span class="i">of</span> <span class="i">element</span>: <span class="t">Element</span>) -&gt; <span class="t">Int</span>? {</div>
@@ -216,9 +224,10 @@ TODO [Ole]: Note for the future: In Swift 4 `Sequence` will most likely get an a
 <div class="line i2"><span class="k">return</span> <span class="i">index</span></div>
 <div class="line i1">}</div>
 <div class="line i0">}</div>
-</div>
+</div></code></pre></div>
 <p><code>Collection</code> 的默认查找算法的原理是：执行一个线性查找来遍历所有元素，直到找到目标或是到达末尾为止。经过我们专门优化后的版本要快得<strong>多的多</strong>。</p>
 <p>检验元素与集合类型的所属关系所需要的代码会稍微少一点，因为我们只需要知道元素是否存在：</p>
+<div class="highlight"><pre><code>
 <div class="code swift">
 <div class="line i0"><span class="k">extension</span> <span class="t">SortedArray</span> {</div>
 <div class="line i1"><span class="k">public</span> <span class="k">func</span> <span class="i">contains</span>(<span class="k">_</span> <span class="i">element</span>: <span class="t">Element</span>) -&gt; <span class="t">Bool</span> {</div>
@@ -226,25 +235,28 @@ TODO [Ole]: Note for the future: In Swift 4 `Sequence` will most likely get an a
 <div class="line i2"><span class="k">return</span> <span class="i">index</span> &lt; <span class="i">count</span> &amp;&amp; <span class="i">storage</span>[<span class="i">index</span>] == <span class="i">element</span></div>
 <div class="line i1">}</div>
 <div class="line i0">}</div>
-</div>
+</div></code></pre></div>
 <p>实现 <code>forEach</code> 更加容易，因为我们可以直接将这个调用传递给我们的存储数组。数组已经排序，因此这个方法将会以正确的顺序访问元素：</p>
+<div class="highlight"><pre><code>
 <div class="code swift">
 <div class="line i0"><span class="k">extension</span> <span class="t">SortedArray</span> {</div>
 <div class="line i1"><span class="k">public</span> <span class="k">func</span> <span class="i">forEach</span>(<span class="k">_</span> <span class="i">body</span>: (<span class="t">Element</span>) <span class="k">throws</span> -&gt; <span class="t">Void</span>) <span class="k">rethrows</span> {</div>
 <div class="line i2"><span class="k">try</span> <span class="i">storage</span>.<span class="i">forEach</span>(<span class="i">body</span>)</div>
 <div class="line i1">}</div>
 <div class="line i0">}</div>
-</div>
+</div></code></pre></div>
 <p>到现在我们已经实现了几个方法，不妨回过头看一看其他 <code>Sequence</code> 和 <code>Collection</code> 的成员，值得开心的是，它们也受益于专门的实现。比如说，由 <code>Comparable</code> 元素组成的序列有一个 <code>sorted()</code> 方法，返回一个包含该序列所有元素的有序数组。对于 <code>SortedArray</code>，简单地返回 <code>storage</code> 就可以实现：</p>
+<div class="highlight"><pre><code>
 <div class="code swift">
 <div class="line i0"><span class="k">extension</span> <span class="t">SortedArray</span> {</div>
 <div class="line i1"><span class="k">public</span> <span class="k">func</span> <span class="i">sorted</span>() -&gt; [<span class="t">Element</span>] {</div>
 <div class="line i2"><span class="k">return</span> <span class="i">storage</span></div>
 <div class="line i1">}</div>
 <div class="line i0">}</div>
-</div>
+</div></code></pre></div>
 <h2 id="插入"><span class="header-section-number">2.3</span> 插入</h2>
 <p>向有序集合中插入一个新元素的流程是：首先用 <code>index(for:)</code> 找到它相应的索引，然后检查这个元素是否已经存在。为了维护 <code>SortedSet</code> 不能包含重复元素特性，我们只向 <code>storage</code> 插入目前不存在的元素：</p>
+<div class="highlight"><pre><code>
 <div class="code swift">
 <div class="line i0"><span class="k">extension</span> <span class="t">SortedArray</span> {</div>
 <div class="line i1"><span class="k">@discardableResult</span></div>
@@ -258,11 +270,12 @@ TODO [Ole]: Note for the future: In Swift 4 `Sequence` will most likely get an a
 <div class="line i2"><span class="k">return</span> (<span class="k">true</span>, <span class="i">newElement</span>)</div>
 <div class="line i1">}</div>
 <div class="line i0">}</div>
-</div>
+</div></code></pre></div>
 <h2 id="实现集合类型"><span class="header-section-number">2.4</span> 实现集合类型</h2>
 <p>下一步，让我们来实现 <code>BidirectionalCollection</code>。因为我们将所有东西都存储到了一个单一数组中，所以最简单的实现方法是在 <code>SortedArray</code> 和它的 <code>storage</code> 之间共享索引。这样一来，我们可以将大多数集合类型的方法直接传递给 <code>storage</code> 数组，从而大幅度简化我们的实现。</p>
 <p><code>Array</code> 实现的不止是 <code>BidirectionalCollection</code>，实际是有着相同 API 接口但语义要求更严格的 <code>RandomAccessCollection</code>。<code>RandomAccessCollection</code> 要求高效的索引计算，因为我们必须任何时候都能够将索引进行任意数量的偏移，以及测算任意两个索引之间的距离。</p>
 <p>一个事实是，我们无论如何都会向 <code>storage</code> 传递各种调用，所以在 <code>SortedArray</code> 上实现相同的协议是一件有意义的事情：</p>
+<div class="highlight"><pre><code>
 <div class="code swift">
 <div class="line i0"><span class="k">extension</span> <span class="t">SortedArray</span>: <span class="t">RandomAccessCollection</span> {</div>
 <div class="line i1"><span class="k">public</span> <span class="k">typealias</span> <span class="t">Indices</span> = <span class="t">CountableRange</span>&lt;<span class="t">Int</span>&gt;</div>
@@ -272,10 +285,11 @@ TODO [Ole]: Note for the future: In Swift 4 `Sequence` will most likely get an a
 <div class="line i0">&nbsp;</div>
 <div class="line i1"><span class="k">public</span> <span class="k">subscript</span>(<span class="i">index</span>: <span class="t">Int</span>) -&gt; <span class="t">Element</span> { <span class="k">return</span> <span class="i">storage</span>[<span class="i">index</span>] }</div>
 <div class="line i0">}</div>
-</div>
+</div></code></pre></div>
 <p>这样我们就完成了 <code>SortedSet</code> 协议的实现。太棒了！</p>
 <h2 id="例子"><span class="header-section-number">2.5</span> 例子</h2>
 <p>让我们来检验一下是否一切正常：</p>
+<div class="highlight"><pre><code>
 <div class="code swift">
 <div class="line i0"><span class="k">var</span> <span class="i">set</span> = <span class="t">SortedArray</span>&lt;<span class="t">Int</span>&gt;()</div>
 <div class="line i0"><span class="k">for</span> <span class="i">i</span> <span class="k">in</span> (<span class="n">0</span> ..&lt; <span class="n">22</span>).<span class="i">shuffled</span>() {</div>
@@ -295,8 +309,9 @@ TODO [Ole]: Note for the future: In Swift 4 `Sequence` will most likely get an a
 <div class="output">
 <div class="line">false</div>
 </div>
-</div>
+</div></code></pre></div>
 <p>看起来不错。但是我们的新集合类型是否具有值语义？</p>
+<div class="highlight"><pre><code>
 <div class="code swift">
 <div class="line i0"><span class="k">let</span> <span class="i">copy</span> = <span class="i">set</span></div>
 <div class="line i0"><span class="i">set</span>.<span class="i">insert</span>(<span class="n">13</span>)</div>
@@ -310,7 +325,7 @@ TODO [Ole]: Note for the future: In Swift 4 `Sequence` will most likely get an a
 <div class="output">
 <div class="line">false</div>
 </div>
-</div>
+</div></code></pre></div>
 <p>看起来答案是肯定的！我们并没有做任何工作来实现值语义；凭借 <code>SortedArray</code> 是一个由单一数组构成的结构体这个仅有的事实，我们得到了前面结果。值语义是一个组合性质，若结构体中的存储属性全都具有值语义，它的行为也会自动表现得一致。</p>
 <h2 id="性能"><span class="header-section-number">2.6</span> 性能</h2>
 <p>当我们谈论一个算法的性能时，我们常用所谓的<strong>大 O 符号</strong>来描述执行时间受输入元素个数的影响所发生的改变，记为：<span class="math inline">\(O(1)\)</span>、<span class="math inline">\(O(n)\)</span>、<span class="math inline">\(O(n^2)\)</span>、<span class="math inline">\(O(\log n)\)</span>、<span class="math inline">\(O(n\log n)\)</span> 等。这个符号在数学上有明确的定义，不过你不需要太关注，理解我们在为算法<strong>增长率</strong> (growth rate) 分类时使用这个符号作为简写就足够了。当输入元素个数倍增时，一个 <span class="math inline">\(O(n)\)</span> 的算法会花费不超过两倍的时间，但是一个 <span class="math inline">\(O(n^2)\)</span> 的算法可能比从前慢四倍，同时一个 <span class="math inline">\(O(1)\)</span> 的算法的执行时间并不大会受输入影响。</p>
@@ -396,39 +411,43 @@ TODO [Ole]: Note for the future: In Swift 4 `Sequence` will most likely get an a
 <p><code>NSOrderedSet</code> 目前还尚未被桥接到 Swift，在这个前提下，尝试为 Objective-C 类定义简单的封装，使其更接近 Swift 的世界，看起来是一个不错的主题。</p>
 <p>尽管 <code>NSOrderedSet</code> 是一个很酷的名字，但这与我们的用例并不是十分匹配。<code>NSOrderedSet</code> 的元素的确是有顺序的，不过它并没有强制要求特定的有序关系，你可以以任何喜欢的顺序来进行元素插入，<code>NSOrderedSet</code> 会像一个数组一样为你记住这一切。“ordered” 和 “sorted” 之间的区别在于是否有一个预定义的顺序，这也是为什么 <code>NSOrderedSet</code> 并不能被称为 <code>NSSortedSet</code> 的原因。这么做最根本的目的是让查找操作的速度足够快，不过它使用的实现方法是哈希而非比较。(<code>Foundation</code> 中不存在与 <code>Comparable</code> 协议等效的东西；<code>NSObject</code> 只提供 <code>Equatable</code> (可判等) 和 <code>Hashable</code> (可哈希) 功能。)</p>
 <p>但是只要 <code>NSOrderedSet</code> 的元素实现了 <code>Comparable</code> 的话，我们就可以做到保持元素按大小排列，而不仅仅是按插入顺序排列。很明显，对 <code>NSOrderedSet</code> 而言这并不算是理想的使用方式，但是我们确实是可以做到这一点的。接下来就让我们引入 Foundation，开始着手于将 <code>NSOrderedSet</code> 锤炼为 <code>SortedSet</code>：</p>
+<div class="highlight"><pre><code>
 <div class="code swift">
 <div class="line i0"><span class="k">import</span> <span class="t">Foundation</span></div>
-</div>
+</div></code></pre></div>
 <p>不过马上我们就遇到了几个大问题。</p>
 <p>第一，<code>NSOrderedSet</code> 是一个类，所以它的实例是引用类型。而我们想要让有序集合具有值语义。</p>
 <p>第二，<code>NSOrderedSet</code> 是一个混合类型序列，它接受 <code>Any</code> 类型作为成员。实现 <code>SortedSet</code> 时我们依然可以设置它的 <code>Element</code> 类型为 <code>Any</code>，而不是将其作为泛型参数，但是感觉这和我们想要的解决方案还有些差距。我们真正期待的是一个泛型的同质集合类型，它可以通过类型参数来指定其中的元素类型。</p>
 <p>基于上述原因，我们不能够只通过扩展 <code>NSOrderedSet</code> 来实现我们的协议。取而代之，我们将会定义一个泛型的封装结构体，它的内部使用 <code>NSOrderedSet</code> 的实例作为存储。这种方法类似于 Swift 标准库为了将 <code>NSArray</code>、<code>NSSet</code> 和 <code>NSDictionary</code> 实例桥接到 Swift 的 <code>Array</code>、 <code>Set</code> 和 <code>Dictionary</code> 值时所做的工作。这样看来，我们似乎步入了正轨。</p>
 <p>我们应该给结构体起个什么名字呢？<code>NSSortedSet</code> 这个想法浮现上来，而且在技术上这是可行的，同时 Swift 限定的构造 (现在和将来都) 并不依赖于使用前缀来解决命名冲突。但站在另一方面来看，对于开发者而言，<code>NS</code> 依然暗示着 <strong>Apple 提供</strong>，所以冒然使用显得很不礼貌，还极容易混淆。我们不妨换个思路，将我们的结构体命名为 <code>OrderedSet</code>。(虽然这个名字也不太正确，但至少像是一个基本数据结构的名字。)</p>
+<div class="highlight"><pre><code>
 <div class="code swift nobuild">
 <div class="line i0"><span class="k">public</span> <span class="k">struct</span> <span class="t">OrderedSet</span>&lt;<span class="t">Element</span>: <span class="t">Comparable</span>&gt;: <span class="t">SortedSet</span> {</div>
 <div class="line i1"><span class="k">fileprivate</span> <span class="k">var</span> <span class="i">storage</span> = <span class="t">NSMutableOrderedSet</span>()</div>
 <div class="line i0">}</div>
-</div>
+</div></code></pre></div>
 <p>我们希望能够修改存储，所以需要将它声明为一个 <code>NSMutableOrderedSet</code> 的实例，<code>NSMutableOrderedSet</code> 是 <code>NSOrderedSet</code> 的可变子类。</p>
 <h2 id="查找元素"><span class="header-section-number">3.1</span> 查找元素</h2>
 <p>现在我们有一个数据结构的空壳。让我们用内容填满它，首先从 <code>forEach</code> 和 <code>contains</code> 这两个查找方法开始。</p>
 <p><code>NSOrderedSet</code> 实现了 <code>Sequence</code>，所以它已经有了一个 <code>forEach</code> 方法。假如元素能够保持正确的顺序，我们可以简单地将 <code>forEach</code> 的调用传递给 <code>storage</code>。然而，我们需要先手动将 <code>NSOrderedSet</code> 提供的值向下转换 (downcast) 为正确类型：</p>
+<div class="highlight"><pre><code>
 <div class="code swift">
 <div class="line i0"><span class="k">extension</span> <span class="t">OrderedSet</span> {</div>
 <div class="line i1"><span class="k">public</span> <span class="k">func</span> <span class="i">forEach</span>(<span class="k">_</span> <span class="i">body</span>: (<span class="t">Element</span>) -&gt; <span class="t">Void</span>) {</div>
 <div class="line i2"><span class="i">storage</span>.<span class="i">forEach</span> { <span class="i">body</span>(<span class="i">$0</span> <span class="k">as</span>! <span class="t">Element</span>) }</div>
 <div class="line i1">}</div>
 <div class="line i0">}</div>
-</div>
+</div></code></pre></div>
 <p><code>OrderedSet</code> 对自身存储具有完全控制权，因此它可以保证存储中永远不会包含除了 <code>Element</code> 以外的任何类型的东西。这确保了向下强制类型转换一定会成功。不过说实话这不太优雅！</p>
 <p><code>NSOrderedSet</code> 恰好也为 <code>contains</code> 提供了实现，而且对于我们的用例来说似乎是完美的。因为不需要显式类型转换，它显得比 <code>forEach</code> 更易于使用：</p>
+<div class="highlight"><pre><code>
 <div class="code swift nobuild">
 <div class="line i0"><span class="k">extension</span> <span class="t">OrderedSet</span> {</div>
 <div class="line i1"><span class="k">public</span> <span class="k">func</span> <span class="i">contains</span>(<span class="k">_</span> <span class="i">element</span>: <span class="t">Element</span>) -&gt; <span class="t">Bool</span> { </div>
 <div class="line i2"><span class="k">return</span> <span class="i">storage</span>.<span class="i">contains</span>(<span class="i">element</span>)  <span class="c">// BUG!</span></div>
 <div class="line i1">}</div>
 <div class="line i0">}</div>
-</div>
+</div></code></pre></div>
 <p>编译上面的代码没有任何警告，当 <code>Element</code> 是 <code>Int</code> 或 <code>String</code> 的时候，它表现得一切正常。但是，正如我们已经提到过的，<code>NSOrderedSet</code> 使用了 <code>NSObject</code> 的哈希 API 来加速元素查找。而我们并未要求 <code>Element</code> 实现 <code>Hashable</code>！这凭什么可以正常工作呢？</p>
 <p>当我们像上面的 <code>storage.contains</code> 中做的那样，将一个 Swift 值类型提供给一个接受 Objective-C 对象的方法时，编译器会为此生成一个私有的 <code>NSObject</code> 子类，并将值装箱 (box) 到其中。一定要记住 <code>NSObject</code> 有内建的哈希 API；你不可能有一个不支持 <code>hash</code> 的 <code>NSObject</code> 实例。因此，这些自动生成的桥接类也必然有与 <code>isEqual(:)</code> 一致的 <code>hash</code> 实现。</p>
 <p>如果 <code>Element</code> 正好实现了 <code>Hashable</code>，那么 Swift 可以直接在桥接类中使用原类型自己的 <code>==</code> 和 <code>hashValue</code> 实现，这样一来，在 Objective-C 和 Swift 中取得 <code>Element</code> 的值的哈希值就是同样的方法了，而且两者都表现得很完美。</p>
@@ -436,14 +455,16 @@ TODO [Ole]: Note for the future: In Swift 4 `Sequence` will most likely get an a
 <p>上面的这一切最终使 <code>contains</code> 可以通过编译，但是它却有一个致命的 bug：如果 <code>Element</code> 并未实现 <code>Hashable</code>，则查找总会返回 <code>false</code>。哎呀，糟糕了！</p>
 <p>亲爱的，这是一个教训：在 Swift 中使用 Objective-C 的 API 时一定要非常非常小心。将 Swift 值自动桥接到 <code>NSObject</code> 实例确实很便利，但是也存在不易察觉的陷阱。关于这个问题，代码中不会有任何明确的警告：没有感叹号，没有显示转换，什么都没有。</p>
 <p>现在我们知道了，在我们的例子中并不能够依赖 <code>NSOrderedSet</code> 的查找方法。所以我们不得不寻找其他 API 来查找元素。谢天谢地，<code>NSOrderedSet</code> 已经包含了另一个查找元素的方法，它依据比较函数的结果对一系列元素进行排序：</p>
+<div class="highlight"><pre><code>
 <div class="code swift nobuild">
 <div class="line i0"><span class="k">class</span> <span class="t">NSOrderedSet</span>: <span class="t">NSObject</span> { <span class="c">// 在 Foundation 中</span></div>
 <div class="line i1">...</div>
 <div class="line i1"><span class="k">func</span> <span class="i">index</span>(<span class="i">of</span> <span class="i">object</span>: <span class="k">Any</span>, <span class="i">inSortedRange</span> <span class="i">range</span>: <span class="t">NSRange</span>, <span class="i">options</span>: <span class="t">NSBinarySearchingOptions</span> = [], <span class="i">usingComparator</span>: (<span class="k">Any</span>, <span class="k">Any</span>) -&gt; <span class="t">ComparisonResult</span>) -&gt; <span class="t">Int</span></div>
 <div class="line i1">...</div>
 <div class="line i0">}</div>
-</div>
+</div></code></pre></div>
 <p>我推测这是二分查找某种形式的实现，所以它应该足够快。我们的元素可以根据它们的 <code>Comparable</code> 特性进行排序，因此我们可以使用 Swift 的 <code>&lt;</code> 和 <code>&gt;</code> 操作符来定义一个适合的比较器函数：</p>
+<div class="highlight"><pre><code>
 <div class="code swift">
 <div class="line i0"><span class="k">extension</span> <span class="t">OrderedSet</span> {</div>
 <div class="line i1"><span class="k">fileprivate</span> <span class="k">static</span> <span class="k">func</span> <span class="i">compare</span>(<span class="k">_</span> <span class="i">a</span>: <span class="k">Any</span>, <span class="k">_</span> <span class="i">b</span>: <span class="k">Any</span>) -&gt; <span class="t">ComparisonResult</span> </div>
@@ -454,8 +475,9 @@ TODO [Ole]: Note for the future: In Swift 4 `Sequence` will most likely get an a
 <div class="line i2"><span class="k">return</span> .<span class="i">orderedSame</span></div>
 <div class="line i1">}</div>
 <div class="line i0">}</div>
-</div>
+</div></code></pre></div>
 <p>我们可以使用这个比较器来定义一个获取特定元素索引的方法。这正好是 <code>Collection</code> 的 <code>index(of:)</code> 方法应当做的，所以需要确保我们的定义让默认实现更加优雅：</p>
+<div class="highlight"><pre><code>
 <div class="code swift">
 <div class="line i0"><span class="k">extension</span> <span class="t">OrderedSet</span> {</div>
 <div class="line i1"><span class="k">public</span> <span class="k">func</span> <span class="i">index</span>(<span class="i">of</span> <span class="i">element</span>: <span class="t">Element</span>) -&gt; <span class="t">Int</span>? {</div>
@@ -466,17 +488,19 @@ TODO [Ole]: Note for the future: In Swift 4 `Sequence` will most likely get an a
 <div class="line i2"><span class="k">return</span> <span class="i">index</span> == <span class="t">NSNotFound</span> ? <span class="k">nil</span> : <span class="i">index</span></div>
 <div class="line i1">}</div>
 <div class="line i0">}</div>
-</div>
+</div></code></pre></div>
 <p>我们有这个函数以后，对 <code>contains</code> 的改造就可以降低到一个很小的范围内：</p>
+<div class="highlight"><pre><code>
 <div class="code swift">
 <div class="line i0"><span class="k">extension</span> <span class="t">OrderedSet</span> {</div>
 <div class="line i1"><span class="k">public</span> <span class="k">func</span> <span class="i">contains</span>(<span class="k">_</span> <span class="i">element</span>: <span class="t">Element</span>) -&gt; <span class="t">Bool</span> {</div>
 <div class="line i2"><span class="k">return</span> <span class="i">index</span>(<span class="i">of</span>: <span class="i">element</span>) != <span class="k">nil</span></div>
 <div class="line i1">}</div>
 <div class="line i0">}</div>
-</div>
+</div></code></pre></div>
 <p>不知道你感觉如何，我发现事情比我预想的要更复杂一些。在如何将值桥接到 Objective-C 的问题上，细节<strong>有时</strong>会带来深远的影响，这可能会以难以察觉却致命的方法破坏我们的代码。如果我们不知道这些玄机的话，很难不经历意料之外的痛苦。</p>
 <p><code>NSOrderedSet</code> 的 <code>contains</code> 实现特别快，这是它的一个旗舰特性，所以不能够使用 <code>contains</code> 这件事就显得更加悲伤了。但是天无绝人之路！考虑到某些类型下 <code>NSOrderedSet.contains</code> 可能错误地返回 <code>false</code>，但如果值不是确实存在于集合里，它也绝不会返回 <code>true</code>。所以，我们可以写一个新版本的 <code>OrderedSet.contains</code>，依然在其中调用原版本方法，但省去了一部分场景下的二分查找需求：</p>
+<div class="highlight"><pre><code>
 <div class="code swift">
 <div class="line i0"><span class="k">extension</span> <span class="t">OrderedSet</span> {</div>
 <div class="line i1"><span class="k">public</span> <span class="k">func</span> <span class="i">contains2</span>(<span class="k">_</span> <span class="i">element</span>: <span class="t">Element</span>) -&gt; <span class="t">Bool</span> {</div>
@@ -484,9 +508,11 @@ TODO [Ole]: Note for the future: In Swift 4 `Sequence` will most likely get an a
 <div class="line i1">}</div>
 <div class="line i0">}</div>
 </div>
+</code></pre></div>
 <p>对于实现了 <code>Hashable</code> 的元素而言，这个版本返回 <code>true</code> 的速度比 <code>index(of:)</code> 更快。不过，遇到值并非集合的成员，或者类型不是可哈希的这两种情况时，处理速度会略微慢一点点。</p>
 <h2 id="实现-collection"><span class="header-section-number">3.2</span> 实现 <code>Collection</code></h2>
 <p><code>NSOrderedSet</code> 只遵循 <code>Sequence</code>，而不遵循 <code>Collection</code>。(这不是什么独特的巧合；它有名的小伙伴 <code>NSArray</code> 和 <code>NSSet</code> 也一样。) 不过，<code>NSOrderedSet</code> 提供了一些基于整数的索引方法，我们可以使用它们在 <code>OrderedSet</code> 中实现 <code>RandomAccessCollection</code>。</p>
+<div class="highlight"><pre><code>
 <div class="code swift">
 <div class="line i0"><span class="k">extension</span> <span class="t">OrderedSet</span>: <span class="t">RandomAccessCollection</span> {</div>
 <div class="line i1"><span class="k">public</span> <span class="k">typealias</span> <span class="t">Index</span> = <span class="t">Int</span></div>
@@ -496,7 +522,7 @@ TODO [Ole]: Note for the future: In Swift 4 `Sequence` will most likely get an a
 <div class="line i1"><span class="k">public</span> <span class="k">var</span> <span class="i">endIndex</span>: <span class="t">Int</span> { <span class="k">return</span> <span class="i">storage</span>.<span class="i">count</span> }</div>
 <div class="line i1"><span class="k">public</span> <span class="k">subscript</span>(<span class="i">i</span>: <span class="t">Int</span>) -&gt; <span class="t">Element</span> { <span class="k">return</span> <span class="i">storage</span>[<span class="i">i</span>] <span class="k">as</span>! <span class="t">Element</span> }</div>
 <div class="line i0">}</div>
-</div>
+</div></code></pre></div>
 <p>事实证明，这出乎意料的简单。</p>
 
 <div class="panel panel-warning">
@@ -587,14 +613,16 @@ TODO [Ole]: Note for the future: In Swift 4 `Sequence` will most likely get an a
 <p>所以，为了实现写时复制，我们现在只能放弃我们钟爱的代数数据结构，将所有东西以一种更“世俗” (或者要我说的话，更<strong>乏味</strong>) 的命令式的形式进行重写，比如使用传统的结构体和类，以及少量的可选值。</p>
 <h2 id="基本定义"><span class="header-section-number">5.1</span> 基本定义</h2>
 <p>首先，我们需要定义一个公有结构体，用来表示有序集合。下面的 <code>RedBlackTree2</code> 类型是对一个树节点的引用的简单封装，该节点将作为树的存储根节点。这与 <code>OrderedSet</code> 没有任何不同，所以我们现在对这个模式应该已经相当熟悉了：</p>
+<div class="highlight"><pre><code>
 <div class="code swift">
 <div class="line i0"><span class="k">public</span> <span class="k">struct</span> <span class="t">RedBlackTree2</span>&lt;<span class="t">Element</span>: <span class="t">Comparable</span>&gt;: <span class="t">SortedSet</span> {</div>
 <div class="line i1"><span class="k">fileprivate</span> <span class="k">var</span> <span class="i">root</span>: <span class="t">Node</span>? = <span class="k">nil</span></div>
 <div class="line i1">&nbsp;</div>
 <div class="line i1"><span class="k">public</span> <span class="k">init</span>() {}</div>
 <div class="line i0">}</div>
-</div>
+</div></code></pre></div>
 <p>接下来，定义树的节点：</p>
+<div class="highlight"><pre><code>
 <div class="code swift">
 <div class="line i0"><span class="k">extension</span> <span class="t">RedBlackTree2</span> {</div>
 <div class="line i1"><span class="k">class</span> <span class="t">Node</span> {</div>
@@ -612,7 +640,7 @@ TODO [Ole]: Note for the future: In Swift 4 `Sequence` will most likely get an a
 <div class="line i2">}</div>
 <div class="line i1">}</div>
 <div class="line i0">}</div>
-</div>
+</div></code></pre></div>
 <p>在原有的 <code>RedBlackTree.node</code> 枚举成员的基础上，这个类还包含了一个新的属性：<code>mutationCount</code>。它的值表示该节点从被创建以来一共被修改的次数。之后在实现我们的 <code>Collection</code> 时，这个值将被用来构建一种全新的索引方式。(我们这里明确将它定义为 64 位整数，这样就算在 32 位系统中，这个值也不会溢出了。在每个节点中都存储 8 个字节的计数器其实并不太必要，因为我们其实只会使用根节点的这个值。让我们先略过这个细节，这么做能让事情多多少少简单一些，在下一章里我们将会寻找减少浪费的方法。)</p>
 <p>不过现在还不是开始说下一章内容的时候！</p>
 <p>通过使用不同的类型来代表节点和树，意味着我们可以将节点类型的实现细节隐藏起来，而只将 <code>RedBlackTree2</code> 暴露为 public。对这个集合类型的外部使用者来说，他们将不会把两者混淆起来。在以前，任何人都可以看到 <code>RedBlackTree</code> 的内部实现，都能用 Swift 的枚举字面量语法来创建他们想要的树，这很容易破坏我们的红黑树的特性。</p>
@@ -821,6 +849,7 @@ TODO [Ole]: Note for the future: In Swift 4 `Sequence` will most likely get an a
 <h2 id="优化对共享存储的插入"><span class="header-section-number">7.2</span> 优化对共享存储的插入</h2>
 <p>到目前为止，每当测量插入性能时，我们总是假设我们的有序集合的存储是完全独立的。但是我们从没有测试过如果我们将元素插入使用共享存储的集合中时，会发生什么。</p>
 <p>为了了解将数据插入共享存储的性能，让我们来设计一种新的性能测量方式吧！一种办法是在每次插入元素后都对整个集合进行复制，然后测量插入一系列元素所花费的时间：</p>
+<div class="highlight"><pre><code>
 <div class="code swift nobuild">
 <div class="line i0"><span class="k">extension</span> <span class="t">SortedSet</span> {</div>
 <div class="line i1"><span class="k">func</span> <span class="i">sharedInsertBenchmark</span>(<span class="k">_</span> <span class="i">input</span>: [<span class="t">Element</span>]) {</div>
@@ -833,7 +862,7 @@ TODO [Ole]: Note for the future: In Swift 4 `Sequence` will most likely get an a
 <div class="line i2"><span class="k">_</span> = <span class="i">copy</span> <span class="c">// 避免变量没有被读取的警告。</span></div>
 <div class="line i1">}</div>
 <div class="line i0">}</div>
-</div>
+</div></code></pre></div>
 <p>图 7.4 展示了对我们到目前为止所实现的 <code>SortedSet</code> 进行这一新的性能测试所得到的结果。</p>
 <div class="figure">
 <img src="https://objccn.io/products/optimizing-collections/preview/Images/SharedInsertion.png" alt="图 7.4: 向共享存储中进行一次插入操作的平摊时间。" /><figcaption>图 7.4: 向共享存储中进行一次插入操作的平摊时间。</figcaption>
@@ -844,6 +873,7 @@ TODO [Ole]: Note for the future: In Swift 4 `Sequence` will most likely get an a
 <p>我们希望我们的 B 树在所有图里的速度都遥遥领先于红黑树。那我们能做些什么来防止在共享存储的情况下的这种性能衰退吗？问得好，我们当然有办法！</p>
 <p>我们推测，变慢是由于大量的内部节点所导致的。我们也知道，树中绝大部分的值都是存储在叶子节点中的，所以内部节点<strong>通常</strong>来说并不会对 B 树性能造成很大影响。在这个前提下，我们可以按照我们的想法来任意改造内部节点，而不必担心它会对性能图表产生什么巨大影响。那么，如果我们大幅限制中间节点的最大尺寸，同时保持叶子节点的尺寸不变，会怎么样呢？</p>
 <p>要实现这个其实非常简单，我们只需要在 <code>BTree2.insert</code> 中进行一行很小的改动即可：</p>
+<div class="highlight"><pre><code>
 <div class="code swift">
 <div class="line i0"><span class="k">extension</span> <span class="t">BTree3</span> {</div>
 <div class="line i1"><span class="k">@discardableResult</span></div>
@@ -860,7 +890,7 @@ TODO [Ole]: Note for the future: In Swift 4 `Sequence` will most likely get an a
 <div class="line i2"><span class="k">return</span> (<span class="i">inserted</span>: <span class="i">old</span> == <span class="k">nil</span>, <span class="i">memberAfterInsert</span>: <span class="i">old</span> ?? <span class="i">element</span>)</div>
 <div class="line i1">}</div>
 <div class="line i0">}</div>
-</div>
+</div></code></pre></div>
 <p>代码块中被标记出来的一行，为树添加了一个新层。我们用来作为新的根节点的阶的数字，也会被用作所有对它进行分割后所得到的节点的阶数。在这里，通过使用一个小的阶数来代替 <code>self.order</code>，我们确保了<strong>所有的</strong>内部节点都以这个阶数进行初始化，而不是以原来初始化 <code>BTree</code> 时所用的阶数。(新的叶子节点总是由已存在的叶子节点分割而成，所以这个值不会应用于叶子节点。)</p>
 <p>我们将这个新版本的 B 树命名为 <code>BTree3</code>，运行性能测试，可以得到 图 7.5 中的结果。 上面的推测是正确的；通过限制内部节点的尺寸，性能得到了很大提升！<code>BTree3</code> 现在即使在大数据集的情况下，也比 <code>RedBlackTree</code> 快上 2-2.5 倍。(通过这种费力的方式创建一棵含有四百万个元素的 <code>BTree3</code> 只需要 15 秒；而 <code>BTree2</code> 做同样的事要花 10 倍的时间。)</p>
 <div class="figure">
@@ -891,6 +921,7 @@ TODO [Ole]: Note for the future: In Swift 4 `Sequence` will most likely get an a
 <h2 id="实现常数时间的插入"><span class="header-section-number">8.1</span> 实现常数时间的插入</h2>
 <p>虽然可能在保持 <code>BTree3</code> 满足 <code>SortedSet</code> 所有要求的同时，大幅提升性能可能是难以做到的，不过如果我们作点弊的话，我们总归是能让它变得更快的。</p>
 <p>比如说，下面代码中的 <code>SillySet</code> 在语法上实现了 <code>SortedSet</code> 协议的要求，而且拥有一个 <span class="math inline">\(O(1)\)</span> 时间复杂度的 <code>insert</code> 方法。它在上面的 <code>insert</code> 性能测试中不费吹灰之力地就能和 <code>Array.sort</code> 一较高下：</p>
+<div class="highlight"><pre><code>
 <div class="code swift">
 <div class="line i0"><span class="k">struct</span> <span class="t">SillySet</span>&lt;<span class="t">Element</span>: <span class="t">Hashable</span> &amp; <span class="t">Comparable</span>&gt;: <span class="t">SortedSet</span>, <span class="t">RandomAccessCollection</span> {</div>
 <div class="line i1"><span class="k">typealias</span> <span class="t">Indices</span> = <span class="t">CountableRange</span>&lt;<span class="t">Int</span>&gt;</div>
@@ -940,7 +971,7 @@ TODO [Ole]: Note for the future: In Swift 4 `Sequence` will most likely get an a
 <div class="line i2"><span class="k">return</span> <span class="i">storage</span>.<span class="i">extras</span>.<span class="i">insert</span>(<span class="i">element</span>)</div>
 <div class="line i1">}</div>
 <div class="line i0">}</div>
-</div>
+</div></code></pre></div>
 <p>当然了，这里的代码有很多问题：比如，要求 <code>Element</code> 是可哈希的，违反了 <code>Collection</code> 的下标要求，使用 <span class="math inline">\(O(n \log n)\)</span> 这样慢到令人惊讶的时间复杂度等。但是我认为最让人恼火的是，<code>SillySet</code> 的索引下标带有副作用，它将会改变底层存储，这破坏了 Swift 中我们关于值语义含义的假设。(举个例子，在线程中传递 <code>SillySet</code> 是很危险的，即使是只读的并行访问也会导致数据发生竞争。)</p>
 <p>这个特定的例子也许看起来实在是很蠢，不过通过将连续插入操作的值收集起来放到一个单独的缓冲区里，以此推迟实际操作的执行时机这个想法本身还是值得赞赏的。将一系列元素用循环的方式一个个插入到有序集合中，这是一种效率很低的做法。我们可以先将这些元素放到单独的缓冲区中排序，然后在线性时间内用一个特殊的<a href="https://github.com/lorentey/BTree/blob/v4.0.2/Sources/BTreeBuilder.swift">批量加载初始化方法</a>将该缓冲区转为一棵 B 树，这么做的话会快很多。</p>
 <p>我们不去关心一个有序集合在插入时的中间状态是否满足要求，因为我们绝不会去使用一个只加载到一半的集合，批量加载之所以可行，正是利用了这一点，我们也因此得到了性能的提升。</p>
@@ -962,6 +993,7 @@ TODO [Ole]: Note for the future: In Swift 4 `Sequence` will most likely get an a
 <p>本书是由 <em>bookie</em> 生成的，这是一个我用来创建关于 Swift 书籍的工具。(显然 <em>Bookie</em> 是出书人 (bookmaker) 的非正式名字，所以名字上来说我觉得简直是完美契合。)</p>
 <p>Bookie 是用 Swift 编写的一个命令行工具，它接受 Markdown 文本文件作为输入，然后生成组织良好的 Xcode Playground、GitHub 样式的 Markdown、EPUB、HTML、LaTeX 以及 PDF 文件，同时它还包括一份含有全部源代码的 Swift 包。Bookie 可以直接生成 playground，Markdown 和源代码，对于其他格式，它将在把文本转换为 Pandoc 自己的 Markdown 方言后再使用 <a href="https://pandoc.org">Pandoc</a> 进行生成。</p>
 <p>为了验证示例代码，bookie 将会把所有 Swift 代码例子提取到一个特殊的 Swift 包中 (以 <code>#sourceLocation</code> 进行细心标注)，并使用 Swift Package Manager 进行构建。之后得到的命令行 app 将会被运行，所有被用来求值的代码将依次运行，并打印返回值。输出将会被分割，每个独立的结果都将被插回打印版书籍中相应的代码行之后：</p>
+<div class="highlight"><pre><code>
 <div class="code swift">
 <div class="line i0"><span class="k">func</span> <span class="i">factorial</span>(<span class="k">_</span> <span class="i">n</span>: <span class="t">Int</span>) -&gt; <span class="t">Int</span> {</div>
 <div class="line i1"><span class="k">return</span> (<span class="n">1</span> ... <span class="i">max</span>(<span class="n">1</span>, <span class="i">n</span>)).<span class="i">reduce</span>(<span class="n">1</span>, *)</div>
@@ -974,9 +1006,10 @@ TODO [Ole]: Note for the future: In Swift 4 `Sequence` will most likely get an a
 <div class="output">
 <div class="line">3628800</div>
 </div>
-</div>
+</div></code></pre></div>
 <p>(在 playground 中，这些输出是动态生成的；但在其他格式里，输出结果将被包括进来。)</p>
 <p>和 Xcode 中一样，语法颜色是通过 <a href="https://github.com/apple/swift/tree/master/tools/SourceKit">SourceKit</a> 完成的。SourceKit 使用的是官方的 Swift 语法，所以上下文关键字总是能够被正确高亮：</p>
+<div class="highlight"><pre><code>
 <div class="code swift">
 <div class="line i0"><span class="k">var</span> <span class="i">set</span> = <span class="t">Set</span>&lt;<span class="t">Int</span>&gt;() <span class="c">// &quot;set&quot; 也是定义属性 setter 的关键字</span></div>
 <div class="line i0"><span class="i">set</span>.<span class="i">insert</span>(<span class="n">42</span>)</div>
@@ -984,6 +1017,6 @@ TODO [Ole]: Note for the future: In Swift 4 `Sequence` will most likely get an a
 <div class="output">
 <div class="line">true</div>
 </div>
-</div>
+</div></code></pre></div>
 <p>本书电子版使用的字体是 <a href="https://github.com/adobe-fonts/source-han-sans">Adobe 的思源黑体</a>。示例代码使用的是 <a href="https://lineto.com/The+Fonts/All+Fonts/Akkurat/">Laurenz Brunner 的 <em>Akkurat</em></a>。</p>
 <p>Bookie (暂时还？) 不是一个免费/开源软件，如果你有兴趣在自己的项目中使用它，请直接联系我。</p>
